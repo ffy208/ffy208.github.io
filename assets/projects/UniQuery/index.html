@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="UniQuery project overview: a full-stack TypeScript analytics platform for dataset management, guided querying, and academic data visualization."
+    />
+    <title>UniQuery | Project Overview</title>
+    <style>
+      :root {
+        --text: #11181c;
+        --muted: #6f7280;
+        --soft: #f4f4f5;
+        --soft-2: #fafafa;
+        --line: #e4e4e7;
+        --blue: #0072f5;
+        --blue-dark: #005bc4;
+        --pink: #f31260;
+        --cyan: #43c4c5;
+        --yellow: #ffd400;
+        --panel: #ffffff;
+        --sidebar: #10181f;
+        --shadow: 0 24px 70px rgba(17, 24, 28, 0.1);
+        --shadow-soft: 0 12px 32px rgba(17, 24, 28, 0.08);
+        --radius: 28px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--text);
+        background: #fff;
+        line-height: 1.55;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(255, 255, 255, 0.86);
+        border-bottom: 1px solid rgba(228, 228, 231, 0.76);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav-inner {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        font-weight: 850;
+        font-size: 1.12rem;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--sidebar);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 22px;
+        color: var(--muted);
+        font-weight: 650;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 88px 0 62px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 8% 16%, rgba(0, 114, 245, 0.08), transparent 28%),
+          radial-gradient(circle at 86% 8%, rgba(243, 18, 96, 0.08), transparent 30%),
+          linear-gradient(180deg, #fff 0%, #fbfbfc 100%);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.86fr) minmax(460px, 1.14fr);
+        gap: 54px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        color: var(--blue);
+        font-size: 0.9rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: var(--pink);
+        box-shadow: 18px 0 0 var(--cyan), 36px 0 0 var(--yellow);
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        font-size: clamp(3.4rem, 7vw, 6.8rem);
+      }
+
+      h2 {
+        font-size: clamp(2.15rem, 4vw, 4.4rem);
+      }
+
+      h3 {
+        font-size: 1.25rem;
+      }
+
+      .gradient-word {
+        color: transparent;
+        background: linear-gradient(95deg, var(--blue), #9c3df5 58%, var(--pink));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .hero-copy {
+        max-width: 620px;
+        margin: 24px 0 0;
+        color: #545864;
+        font-size: 1.18rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 34px;
+      }
+
+      .button {
+        min-height: 52px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        padding: 12px 20px;
+        text-decoration: none;
+        font-weight: 820;
+      }
+
+      .button.primary {
+        color: #fff;
+        background: var(--blue);
+        box-shadow: 0 14px 28px rgba(0, 114, 245, 0.26);
+      }
+
+      .button.secondary {
+        color: var(--text);
+        background: var(--soft);
+      }
+
+      .hero-card {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 34px;
+        padding: 16px;
+        background: #fff;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: -18px;
+        z-index: -1;
+        border-radius: 44px;
+        background:
+          linear-gradient(135deg, rgba(0, 114, 245, 0.1), transparent 38%),
+          linear-gradient(315deg, rgba(243, 18, 96, 0.1), transparent 34%);
+      }
+
+      .screenshot {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: #fff;
+      }
+
+      .screenshot img {
+        width: 100%;
+        height: auto;
+      }
+
+      .hero-shot img {
+        object-position: center top;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .metric {
+        border-radius: 22px;
+        padding: 18px;
+        background: var(--soft-2);
+        border: 1px solid var(--line);
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.35rem;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-weight: 650;
+      }
+
+      section {
+        padding: 86px 0;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(320px, 0.6fr);
+        gap: 40px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+
+      .section-copy {
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 13px;
+        background: #fff;
+        color: var(--muted);
+        font-weight: 760;
+      }
+
+      .band {
+        background: var(--soft-2);
+      }
+
+      .grid {
+        display: grid;
+        gap: 22px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .screen-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        background: #fff;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .screen-media {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .screen-media.tall {
+        min-height: 0;
+      }
+
+      .screen-media img {
+        width: 100%;
+        height: auto;
+        object-position: center top;
+      }
+
+      .screen-body {
+        padding: 22px 24px 24px;
+      }
+
+      .screen-body p {
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+
+      .architecture {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .pipeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 16px;
+        background: #fff;
+      }
+
+      .step-number {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 18px;
+        color: #fff;
+        background: var(--blue);
+        font-weight: 900;
+      }
+
+      .step p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .quote-card {
+        border-radius: 34px;
+        padding: 34px;
+        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(0, 114, 245, 0.95), rgba(16, 24, 31, 0.94)),
+          var(--sidebar);
+        box-shadow: var(--shadow);
+      }
+
+      .quote-card p {
+        margin: 18px 0 0;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .note {
+        margin-top: 28px;
+        border: 1px solid rgba(243, 18, 96, 0.18);
+        border-radius: 24px;
+        padding: 18px 20px;
+        color: #744052;
+        background: rgba(243, 18, 96, 0.06);
+      }
+
+      .footer {
+        padding: 38px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      @media (max-width: 940px) {
+        .hero-grid,
+        .section-head,
+        .grid.two,
+        .architecture {
+          grid-template-columns: 1fr;
+        }
+
+        .pill-row {
+          justify-content: flex-start;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          width: min(100% - 28px, 1180px);
+        }
+
+        .nav-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px 0;
+        }
+
+        .nav-links {
+          width: 100%;
+          overflow-x: auto;
+          justify-content: flex-start;
+          padding-bottom: 4px;
+        }
+
+        .hero {
+          padding-top: 58px;
+        }
+
+        h1 {
+          font-size: clamp(3.1rem, 16vw, 5rem);
+        }
+
+        section {
+          padding: 62px 0;
+        }
+
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav" aria-label="Primary navigation">
+      <div class="shell nav-inner">
+        <a class="brand" href="#top" aria-label="UniQuery project overview">
+          <span class="brand-mark">UQ</span>
+          <span>UniQuery</span>
+        </a>
+        <div class="nav-links">
+          <a href="#top">Overview</a>
+          <a href="#screens">Screenshots</a>
+          <a href="#architecture">Architecture</a>
+          <a href="../../../index.html">Back to portfolio</a>
+        </div>
+      </div>
+    </nav>
+
+    <header id="top" class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <h1>Academic analytics with a <span class="gradient-word">clean query UI</span>.</h1>
+          <p class="hero-copy">
+            UniQuery is a TypeScript web app for managing datasets, building guided
+            queries, and turning academic records into visual insights. This page
+            presents the product experience and engineering decisions as a
+            project overview.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#screens">View screenshots</a>
+            <a class="button secondary" href="#architecture">See architecture</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="screenshot hero-shot">
+            <img
+              src="Uniquery_Select_Dataset.png"
+              alt="UniQuery dataset selection screen with sidebar, table, and action controls"
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="screens">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Product screenshots</h2>
+              <p class="section-copy">
+                These screenshots show the strongest parts of the interface:
+                clean navigation, large action controls, dashboard spacing, and
+                chart-first results.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <article class="screen-card">
+              <div class="screen-media tall">
+                <img
+                  src="Uniquery_About.png"
+                  alt="UniQuery welcome screen with large headline and primary actions"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Landing and Orientation</h3>
+                <p>
+                  A bright first screen with prominent product naming, direct
+                  navigation, and simple entry points.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media tall">
+                <img
+                  src="Uniquery_Add_Dataset.png"
+                  alt="UniQuery add dataset modal with upload form and dataset type selector"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Dataset Upload Flow</h3>
+                <p>
+                  A modal flow keeps uploads focused while preserving the dataset
+                  table context behind it.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img
+                  src="Uniquery_Pass_Fail_Rate.png"
+                  alt="UniQuery pass fail rate analytics chart with query controls"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Pass and Fail Analytics</h3>
+                <p>
+                  Form controls and year ranges feed a chart that compares outcome
+                  percentages across time.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img
+                  src="Uniquery_Popular_Courses.png"
+                  alt="UniQuery popular courses chart with year segmented control"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Popular Courses</h3>
+                <p>
+                  A segmented year control and descending sort make course demand
+                  comparisons quick to inspect.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img
+                  src="Uniquery_Stable_Grade_Trends.png"
+                  alt="UniQuery stable grade trends line chart with course filter form"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Stable Grade Trends</h3>
+                <p>
+                  The line-chart view highlights longitudinal behavior and makes
+                  average movement visible at a glance.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img
+                  src="Uniquery_Select_Dataset.png"
+                  alt="UniQuery dataset selection table with search, filter, sort, and column controls"
+                />
+              </div>
+              <div class="screen-body">
+                <h3>Dataset Selection</h3>
+                <p>
+                  The table surface combines search, filter, sort, column control,
+                  selection state, and row-level actions.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="band">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Architecture</h2>
+              <p class="section-copy">
+                UniQuery is split into a Next.js frontend and an Express +
+                TypeScript backend. The frontend owns the dashboard workflows and
+                chart presentation, while the backend handles dataset ingestion,
+                validation, query execution, and persisted dataset state.
+              </p>
+            </div>
+          </div>
+
+          <div class="architecture">
+            <div class="pipeline">
+              <div class="step">
+                <span class="step-number">1</span>
+                <div>
+                  <h3>Frontend Dashboard</h3>
+                  <p>Next.js and React compose dataset management, guided query forms, and analysis views.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <div>
+                  <h3>API Boundary</h3>
+                  <p>Typed client requests call Express endpoints for uploads, dataset actions, and analytical queries.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">3</span>
+                <div>
+                  <h3>Backend Processing</h3>
+                  <p>Node, TypeScript, JSZip, and parse5 validate uploaded archives and normalize course records.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">4</span>
+                <div>
+                  <h3>Results Layer</h3>
+                  <p>Processed responses return to reusable table and Chart.js components for interactive analysis.</p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="quote-card">
+              <h2>Design Rationale</h2>
+              <p>
+                I separated the dashboard from the data engine so each side could
+                evolve independently: the frontend can add new analysis views
+                without changing parsing logic, and the backend can tighten
+                validation or query behavior without reshaping the UI.
+              </p>
+              <p>
+                The API boundary also keeps the project easier to test. Dataset
+                upload, query validation, execution, and visualization each have a
+                clear responsibility instead of being coupled in one large flow.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <p>
+          UniQuery project overview. <a href="../../../index.html">Back to portfolio</a>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

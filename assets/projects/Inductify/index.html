@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Inductify project overview: an AI-powered onboarding chatbot using LangChain, RAG, ChromaDB, FastAPI, OpenAI embeddings, CrossEncoder reranking, and Docker."
+    >
+    <title>Inductify | Project Overview</title>
+    <style>
+      :root {
+        --text: #11181c;
+        --muted: #6f7280;
+        --soft: #f5f6f8;
+        --line: #e1e5eb;
+        --panel: #ffffff;
+        --ink-panel: #101114;
+        --blue: #2563eb;
+        --blue-dark: #1d4ed8;
+        --cyan: #06b6d4;
+        --shadow: 0 24px 70px rgba(17, 24, 28, 0.1);
+        --shadow-soft: 0 12px 32px rgba(17, 24, 28, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background: #fff;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(225, 229, 235, 0.78);
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 76px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--text);
+        font-size: 1.12rem;
+        font-weight: 850;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+        box-shadow: var(--shadow-soft);
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 22px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 88px 0 66px;
+        background:
+          radial-gradient(circle at 10% 16%, rgba(37, 99, 235, 0.08), transparent 30%),
+          radial-gradient(circle at 88% 10%, rgba(6, 182, 212, 0.08), transparent 28%),
+          linear-gradient(180deg, #fff 0%, #f9fafb 100%);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.88fr) minmax(440px, 1.12fr);
+        gap: 52px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--blue);
+        font-size: 0.86rem;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 780px;
+        margin-bottom: 24px;
+        font-size: clamp(3.1rem, 6.5vw, 6.4rem);
+      }
+
+      h2 {
+        margin-bottom: 18px;
+        font-size: clamp(2rem, 4vw, 4rem);
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 1.25rem;
+      }
+
+      .gradient-word {
+        color: transparent;
+        background: linear-gradient(95deg, var(--blue), #7c3aed 56%, var(--cyan));
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .hero-copy {
+        max-width: 650px;
+        color: #555b67;
+        font-size: 1.16rem;
+      }
+
+      .hero-highlights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0;
+        margin: 28px 0 0;
+        list-style: none;
+      }
+
+      .hero-highlights li {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.74);
+        box-shadow: 0 10px 24px rgba(17, 24, 28, 0.06);
+      }
+
+      .hero-highlights strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 1.2rem;
+      }
+
+      .hero-highlights span {
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+        padding: 12px 20px;
+        border-radius: 16px;
+        font-weight: 820;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        color: #fff;
+        background: var(--blue);
+        box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24);
+      }
+
+      .button.primary:hover {
+        background: var(--blue-dark);
+      }
+
+      .button.secondary {
+        color: var(--text);
+        background: var(--soft);
+      }
+
+      .hero-card {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        padding: 16px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .screenshot,
+      .screen-media {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: #fff;
+      }
+
+      .screenshot img,
+      .screen-media img {
+        width: 100%;
+        height: auto;
+      }
+
+      section {
+        padding: 82px 0;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.8fr) minmax(320px, 0.62fr);
+        gap: 40px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+
+      .section-copy {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 13px;
+        background: #fff;
+        color: var(--muted);
+        font-weight: 760;
+      }
+
+      .band {
+        background: #f8fafc;
+      }
+
+      .grid {
+        display: grid;
+        gap: 24px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .screen-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #fff;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .screen-media {
+        border-radius: 0;
+        border-width: 0 0 1px;
+      }
+
+      .screen-body {
+        padding: 22px 24px 24px;
+      }
+
+      .screen-body p {
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+
+      .architecture {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .pipeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 16px;
+        background: #fff;
+      }
+
+      .step-number {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        color: #fff;
+        background: var(--blue);
+        font-weight: 900;
+      }
+
+      .step p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .quote-card {
+        border-radius: 30px;
+        padding: 34px;
+        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(37, 99, 235, 0.94), rgba(17, 24, 39, 0.95)),
+          var(--ink-panel);
+        box-shadow: var(--shadow);
+      }
+
+      .quote-card p {
+        margin: 18px 0 0;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .footer {
+        padding: 38px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      @media (max-width: 940px) {
+        .hero-grid,
+        .section-head,
+        .grid.two,
+        .architecture {
+          grid-template-columns: 1fr;
+        }
+
+        .pill-row {
+          justify-content: flex-start;
+        }
+
+        .hero-highlights {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          width: min(100% - 28px, 1180px);
+        }
+
+        .nav-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px 0;
+        }
+
+        .nav-links {
+          justify-content: flex-start;
+        }
+
+        .hero {
+          padding-top: 58px;
+        }
+
+        h1 {
+          font-size: clamp(3rem, 16vw, 5rem);
+        }
+
+        section {
+          padding: 62px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav" aria-label="Primary navigation">
+      <div class="shell nav-inner">
+        <a class="brand" href="#top" aria-label="Inductify project overview">
+          <span class="brand-mark">AI</span>
+          <span>Inductify</span>
+        </a>
+        <div class="nav-links">
+          <a href="#top">Overview</a>
+          <a href="#screens">Screenshots</a>
+          <a href="#architecture">Architecture</a>
+          <a href="../../../index.html">Back to portfolio</a>
+        </div>
+      </div>
+    </nav>
+
+    <header id="top" class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">LangChain RAG onboarding assistant</p>
+          <h1>Company policy answers with <span class="gradient-word">cited sources</span>.</h1>
+          <p class="hero-copy">
+            Inductify lets new hires query 10K+ internal policy documents and
+            receive grounded answers with source citation cards. I designed the
+            retrieval and generation pipeline around fast Q&A, document indexing,
+            and evaluation-driven improvements to answer quality.
+          </p>
+          <ul class="hero-highlights" aria-label="Project highlights">
+            <li>
+              <strong>10K+</strong>
+              <span>indexed internal docs</span>
+            </li>
+            <li>
+              <strong>&lt;5s</strong>
+              <span>cited Q&amp;A latency target</span>
+            </li>
+            <li>
+              <strong>83%</strong>
+              <span>held-out RAG eval accuracy</span>
+            </li>
+          </ul>
+          <div class="hero-actions">
+            <a class="button primary" href="#screens">View screenshots</a>
+            <a class="button secondary" href="#architecture">See architecture</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="screenshot">
+            <img
+              src="Inductify_2.png"
+              alt="Inductify assistant answering a PTO rollover question with cited source excerpts"
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="screens">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Product Screens</h2>
+              <p class="section-copy">
+                The interface is built around a familiar chat workspace:
+                conversation history, source-backed answers, document upload,
+                dark mode, and clear onboarding prompts.
+              </p>
+            </div>
+            <div class="pill-row" aria-label="Technology stack">
+              <span class="pill">LangChain</span>
+              <span class="pill">RAG</span>
+              <span class="pill">ChromaDB</span>
+              <span class="pill">Python</span>
+              <span class="pill">FastAPI</span>
+              <span class="pill">OpenAI LLM</span>
+              <span class="pill">CrossEncoder</span>
+              <span class="pill">Docker</span>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_1.png" alt="Inductify empty chat workspace with onboarding assistant prompt">
+              </div>
+              <div class="screen-body">
+                <h3>Onboarding Workspace</h3>
+                <p>
+                  A chat-first interface gives employees a direct place to ask
+                  questions about policies, benefits, and procedures.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_2.png" alt="Inductify PTO answer with a cited source card">
+              </div>
+              <div class="screen-body">
+                <h3>Source-Grounded Answers</h3>
+                <p>
+                  Answers include retrieved source snippets and confidence scores,
+                  making policy responses easier to verify.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_3.png" alt="Inductify benefits answer with cited policy source">
+              </div>
+              <div class="screen-body">
+                <h3>Benefits and HR Queries</h3>
+                <p>
+                  The assistant handles common onboarding questions such as PTO,
+                  health benefits, remote work, and reimbursements.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_4.png" alt="Inductify profile menu and remote work answer">
+              </div>
+              <div class="screen-body">
+                <h3>Conversation Context</h3>
+                <p>
+                  Recent conversations and profile actions keep the workflow
+                  familiar while preserving multi-turn onboarding sessions.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_5.png" alt="Inductify dark mode answer with source cards">
+              </div>
+              <div class="screen-body">
+                <h3>Dark Mode</h3>
+                <p>
+                  The UI supports light and dark themes, keeping the assistant
+                  comfortable for long policy-review sessions.
+                </p>
+              </div>
+            </article>
+
+            <article class="screen-card">
+              <div class="screen-media">
+                <img src="Inductify_6.png" alt="Inductify dark mode travel expense answer">
+              </div>
+              <div class="screen-body">
+                <h3>Policy Detail Retrieval</h3>
+                <p>
+                  Retrieved context helps the assistant answer detailed questions
+                  about limits, eligibility, timelines, and required receipts.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="band">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Architecture</h2>
+              <p class="section-copy">
+                Inductify separates the chat UI from the retrieval and generation
+                layer. A modular FastAPI backend exposes RESTful endpoints for
+                real-time Q&A and asynchronous document indexing, while the RAG
+                pipeline uses OpenAI embeddings, ChromaDB vector search, and an
+                optional CrossEncoder reranker before generation.
+              </p>
+            </div>
+          </div>
+
+          <div class="architecture">
+            <div class="pipeline">
+              <div class="step">
+                <span class="step-number">1</span>
+                <div>
+                  <h3>Document Intake</h3>
+                  <p>Employees upload txt, md, PDF, or xlsx files for indexing through the chat interface.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <div>
+                  <h3>Indexing Pipeline</h3>
+                  <p>FastAPI chunks documents, creates OpenAI embeddings, and stores vectors in ChromaDB.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">3</span>
+                <div>
+                  <h3>RAG + Reranking</h3>
+                  <p>LangChain retrieves top-k chunks and a CrossEncoder reranker improves source relevance before generation.</p>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">4</span>
+                <div>
+                  <h3>Evaluation Loop</h3>
+                  <p>Offline tests track top-3 accuracy and compare LLM-only answers against the full RAG pipeline.</p>
+                </div>
+              </div>
+            </div>
+
+            <aside class="quote-card">
+              <h2>Design Rationale</h2>
+              <p>
+                The central design goal was trust under realistic onboarding
+                pressure. Instead of returning a plain answer, Inductify exposes
+                the policy excerpts used to generate it, reducing unverifiable
+                responses and making HR guidance easier to audit.
+              </p>
+              <p>
+                The evaluation loop made the retrieval gains measurable: the
+                system improved top-3 answer accuracy from 56% to 88% in testing,
+                while a 54-question ablation moved from an LLM-only baseline near
+                2% to 83% with the full RAG pipeline.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <p>
+          Inductify project overview. <a href="../../../index.html">Back to portfolio</a>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
