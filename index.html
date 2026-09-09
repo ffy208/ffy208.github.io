@@ -215,6 +215,41 @@
           <article class="project-card">
             <div class="project-media">
               <img
+                src="assets/projects/VLM-OPD/data_efficiency.png"
+                alt="Accuracy versus training questions for supervised and on-policy distillation of a vision-language model"
+                width="900"
+                height="600"
+              >
+            </div>
+            <div class="project-content">
+              <p class="project-type">Independent research - LLM distillation for vision-language models</p>
+              <h3>On-Policy Distillation for Vision-Language Reasoning</h3>
+              <p>
+                Transferred on-policy distillation (DAgger-style, per-token KL to
+                a teacher on the student's own rollouts) to Qwen3-VL on ChartQA.
+                A 2B student trained on 300 questions matches supervised
+                distillation on 3,000 (+5.8 points at equal data, paired 95% CI
+                excludes 0), and a token-level analysis shows the teacher's
+                feedback lands on answers and format before chart values.
+              </p>
+              <ul class="tag-list" aria-label="Research methods used">
+                <li>On-Policy Distillation</li>
+                <li>Qwen3-VL</li>
+                <li>LoRA</li>
+                <li>vLLM</li>
+                <li>Paired Bootstrap</li>
+                <li>ChartQA</li>
+              </ul>
+              <div class="project-links">
+                <a class="button primary" href="https://ffy208.github.io/On-Policy-Distillation-for-Vision-Language-Reasoning/">Project Details</a>
+                <a class="button" href="https://github.com/ffy208/On-Policy-Distillation-for-Vision-Language-Reasoning">Code</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img
                 src="assets/projects/FireFair/shot-statewide.webp"
                 alt="FireFair statewide California dashboard showing equity-adjusted wildfire ignition risk"
                 width="1920"
