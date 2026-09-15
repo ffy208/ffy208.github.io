@@ -464,8 +464,10 @@
         var PX = 20, AXIS_W = 200, CENTER = AXIS_W / 2, BAR = 8, LANE = 12, OFFSET = 26, GAP = 22;
         function month(str) { var p = str.split("-"); return +p[0] * 12 + (+p[1] - 1); }
         var from = month(g.dataset.from), to = month(g.dataset.to), now = month(g.dataset.now);
-        var H = (to - from + 1) * PX;
-        function yAt(m) { return (to + 1 - m) * PX; }
+        // Dates are month starts: a bar runs from the start of its first month to the start of its
+        // end month, so an entry ending in May sits flush with entries starting in May.
+        var H = (to - from) * PX;
+        function yAt(m) { return (to - m) * PX; }
         var mq = window.matchMedia("(min-width: 821px)");
 
         function reset() {
@@ -506,8 +508,10 @@
             });
             var prevBottom = -Infinity;
             cards.forEach(function (c) {
-              var barTop = yAt(c.b + 1) + (c.trimTop ? PX / 2 + 1 : 0);
-              var barBottom = yAt(c.a) - (c.trimBottom ? PX / 2 + 1 : 0);
+              var barTop = yAt(c.b) + (c.trimTop ? 1 : 0);
+              var barBottom = yAt(c.a) - (c.trimBottom ? 1 : 0);
+              // each card sits level with the start of its bar, pushed down only to avoid
+              // overlapping the previous card; a same-colored L links it back to the bar
               var ys = barBottom, top = Math.max(ys - 12, prevBottom + GAP);
               c.el.style.top = top + "px";
               prevBottom = top + c.el.offsetHeight;
@@ -518,7 +522,7 @@
               bar.style.left = x + "px"; bar.style.top = barTop + "px";
               bar.style.height = (barBottom - barTop) + "px"; bar.style.background = color;
               if (c.b > now) {
-                var solid = barBottom - barTop - (c.b - now) * PX;
+                var solid = barBottom - barTop - (yAt(now) - yAt(c.b));
                 bar.style.background = "linear-gradient(to top, " + color + " " + solid + "px, transparent 100%)";
               }
               axis.appendChild(bar);
